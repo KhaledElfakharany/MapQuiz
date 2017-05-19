@@ -18,6 +18,7 @@ class MapScreen: UIViewController , GMSMapViewDelegate {
     let appSecret = "zV2guR6QyCJVS3X7sYdSRJoBkFTHHKtXIqTGTyF3HthkUEWxlwxHEGudF9hPXDKg"
     var places = [Place]()
     let locationManager = CLLocationManager()
+    var firstTime = true
     var lat : Double!
     var long : Double!
     @IBOutlet weak var loadingView: UIView!
@@ -124,14 +125,19 @@ class MapScreen: UIViewController , GMSMapViewDelegate {
     }
     
     func mapView(_ mapView: GMSMapView, didChange position: GMSCameraPosition) {
-        mapView.clear()
-        places.removeAll()
-        self.downloadPlaces(long: position.target.longitude, lat: position.target.latitude){
-            for item in self.places {
-                let marker = GMSMarker()
-                marker.position = CLLocationCoordinate2D(latitude: item.lat, longitude: item.long)
-                marker.map = mapView
+        if firstTime {
+            firstTime = false
+        }else {
+            mapView.clear()
+            places.removeAll()
+            self.downloadPlaces(long: position.target.longitude, lat: position.target.latitude){
+                for item in self.places {
+                    let marker = GMSMarker()
+                    marker.position = CLLocationCoordinate2D(latitude: item.lat, longitude: item.long)
+                    marker.map = mapView
+                }
             }
+            
         }
     }
     
